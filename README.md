@@ -1,25 +1,38 @@
-##  Diabetes Prediction Model
-This project aims to predict the likelihood of diabetes in individuals using logistic regression and support vector machine (SVM) models.
+# Diabetes prediction (Pima Indians dataset)
 
-## Features
-The model considers various features for predicting diabetes risk, including:
+Predicting whether a patient has diabetes from eight routine clinical measurements, with logistic regression and a support vector machine.
 
-Glucose levels
-Blood pressure
-Body mass index (BMI)
-Insulin levels
-Age
-Pregnancy status (for females)
+## Data
 
-## DataSet
-The dataset used for training and testing the models is sourced from Kaggle.
+`diabetes.csv` is the Pima Indians Diabetes dataset (768 women, 268 with diabetes), from Kaggle. Features: pregnancies, glucose, blood pressure, skin thickness, insulin, BMI, diabetes pedigree function and age.
 
-## Models
-## Logistic Regression
-Logistic regression is a statistical method used for binary classification tasks. In this project, logistic regression is employed to predict the probability of an individual having diabetes based on the provided features.
+Several columns use 0 for missing values (for example a blood pressure of 0). In both notebooks, zeros in glucose, blood pressure, skin thickness, insulin and BMI are replaced by the column median.
 
-## Support Vector Machine (SVM)
-SVM is a powerful supervised learning algorithm capable of performing classification, regression, and outlier detection tasks. Here, SVM is applied to classify individuals into diabetic and non-diabetic categories based on the feature set.
+## Method
 
-## Results
-The performance of the models is evaluated using metrics such as accuracy, and F1-score. Detailed results and model performance analysis can be found in the code.
+- 80/20 train/test split (`random_state=1`, 154 test patients)
+- `Diabeties Prediction Model.ipynb`: logistic regression with 5-fold cross-validated regularisation (`LogisticRegressionCV`), plus a correlation heatmap and confusion matrix
+- `SVM.ipynb`: support vector machine (RBF kernel, default settings)
+
+## Results (test set, 154 patients)
+
+| Model | Accuracy | Sensitivity for diabetes | F1 for diabetes |
+|---|---|---|---|
+| Logistic regression | 76% | 55% (30 of 55) | 0.62 |
+| SVM (RBF) | 79.2% | 51% (28 of 55) | 0.64 |
+
+Both models miss about half of the patients with diabetes. Accuracy looks reasonable mainly because two thirds of the patients do not have diabetes.
+
+## What I would do differently
+
+- Report sensitivity and F1 for the diabetes class as the main metrics, not accuracy.
+- Scale the features before the SVM and tune its parameters with cross-validation.
+- Choose a decision threshold that catches more diabetic patients, since a missed diagnosis costs more than a false alarm.
+- Fit the median imputation on the training set only, so no information from the test set leaks into training.
+
+## Run
+
+```bash
+pip install -r requirements.txt
+jupyter notebook
+```
